@@ -8,8 +8,6 @@
 #include "config.h"
 #include "log.h"
 
-Log* LOGGER = NULL;
-
 int main(int argc, char *argv[])
 {
   srand(time(NULL));
@@ -17,30 +15,30 @@ int main(int argc, char *argv[])
   int delta_time;
   
   // Initialize log
-  if (log_init(LOGGER, LOG_LEVEL_DEBUG) == -1) {
+  if (log_init(LOG_LEVEL_DEBUG) == -1) {
     printf("[FATAL] >> log_init() failed");
     return EXIT_FAILURE;
   };
 
   Timer* timer = timer_init();
   if (timer == NULL) {
-    LOG(LOG_LEVEL_FATAL, "timer_init() failed");
+    LOG_FATAL("timer_init() failed");
     return EXIT_FAILURE;
   }
 
   Window* window = window_init(WINDOW_X_POS, WINDOW_Y_POS, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, false);  
   if (window == NULL) {
-    LOG(LOG_LEVEL_FATAL, "window_init() failed");
+    LOG_FATAL("window_init() failed");
     return EXIT_FAILURE;
   }  
 
+
+  LOG_INFO("Starting main loop");
   timer_start(timer);
 
   while (true) {
     timer_start(timer);
     delta_time = timer_compute_delta_time(timer);
-    
-    LOG(LOG_LEVEL_INFO, "Starting main loop");
     
     window_update_fps(window, delta_time);
     window_clear(window);

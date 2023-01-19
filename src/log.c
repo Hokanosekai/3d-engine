@@ -3,12 +3,14 @@
 
 #include "log.h"
 
-int log_init(Log* log, LogLevel level)
+Log* LOGGER = NULL;
+
+int log_init(LogLevel level)
 {
-  log = malloc(sizeof(Log));
-  if (log == NULL) return -1;
+  LOGGER = malloc(sizeof(Log));
+  if (LOGGER == NULL) return -1;
   
-  log->file = fopen(LOG_FILE, "a");
+  LOGGER->file = fopen(LOG_FILE, "a");
 
   return 0;
 }
@@ -49,3 +51,10 @@ void log_write(LogLevel level, const char *message)
   fflush(LOGGER->file);
   printf("[%s] >> %s\n", log_get_level_string(level), message);
 }
+
+void LOG(LogLevel level, const char *message) {
+  if (level >= LOGGER->level) {
+    log_write(level, message);
+  }
+}
+

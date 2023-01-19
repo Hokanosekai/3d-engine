@@ -7,8 +7,6 @@
 #include "config.h"
 #include "log.h"
 
-extern Log* logger;
-
 Window* window_init(int x_pos, int y_pos, int width, int height, const char* title, bool fullscreen)
 {
   Window* window = malloc(sizeof(Window));
@@ -30,8 +28,8 @@ Window* window_init(int x_pos, int y_pos, int width, int height, const char* tit
     window->sdl_window = SDL_CreateWindow(title, x_pos, y_pos, width, height, flags);
     if (window->sdl_window == NULL)
     {
-      LOG(LOG_LEVEL_ERROR, "Failed to create SDL window.");
-      LOG(LOG_LEVEL_ERROR, SDL_GetError());
+      LOG_ERROR("Failed to create SDL window.");
+      LOG_ERROR(SDL_GetError());
       return NULL;
     }
 
@@ -39,32 +37,32 @@ Window* window_init(int x_pos, int y_pos, int width, int height, const char* tit
     window->sdl_context = SDL_GL_CreateContext(window->sdl_window);
     if (window->sdl_context == NULL)
     {
-      LOG(LOG_LEVEL_ERROR, "Failed to create SDL OpenGL context.");
-      LOG(LOG_LEVEL_ERROR, SDL_GetError());
+      LOG_ERROR("Failed to create SDL OpenGL context.");
+      LOG_ERROR(SDL_GetError());
       return NULL;
-    }
-
+    }  
+  
     // Enable VSync
     if (SDL_GL_SetSwapInterval(1) < 0)
-    {
-      LOG(LOG_LEVEL_WARN, "Failed to enable VSync.");
-      LOG(LOG_LEVEL_WARN, SDL_GetError());
-    }
-
+    {  
+      LOG_ERROR("Failed to enable VSync.");
+      LOG_ERROR(SDL_GetError());
+    }  
+  
     glViewport(0, 0, width, height);
     glEnable(GL_CULL_FACE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    
+      
     if (glGetError() != GL_NO_ERROR)
-    {
-      LOG(LOG_LEVEL_ERROR, "Failed to initialize OpenGL.");
-      LOG(LOG_LEVEL_ERROR, SDL_GetError());
+    {  
+      LOG_ERROR("Failed to initialize OpenGL.");
+      LOG_ERROR(SDL_GetError());
       return NULL;
-    }
-  } else {
-    LOG(LOG_LEVEL_ERROR, "Failed to initialize SDL.");
-    LOG(LOG_LEVEL_ERROR, SDL_GetError());
+    }  
+  } else {  
+    LOG_ERROR("Failed to initialize SDL.");
+    LOG_ERROR(SDL_GetError());
     return NULL;
   }
   
@@ -97,6 +95,7 @@ void window_update_fps(Window *window, long delta_time)
     char tmp[128];
     double fps = window->frame_count / elapsed_seconds;
     sprintf(tmp, "%s - FPS: %.2f", window->title, fps);
+    LOG_INFO(tmp);
     SDL_SetWindowTitle(window->sdl_window, tmp);
     window->frame_count = 0;
   }
