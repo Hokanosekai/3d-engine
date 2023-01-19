@@ -50,6 +50,7 @@ int main(int argc, char *argv[])
 
   timer_destroy(timer);
   window_destroy(window);
+  log_destroy();
 
   return EXIT_SUCCESS;
 }

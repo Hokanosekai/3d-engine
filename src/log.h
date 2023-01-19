@@ -29,14 +29,31 @@ extern Log* LOGGER;
  */
 int log_init(LogLevel level);
 
-void log_destroy(Log* log);
+/**
+ * @brief Destroys the log.
+ */  
+void log_destroy();
 
-void log_restart(Log* log);
-
+/**
+ * @brief Get the prefix for the log level.
+ * @param level The log level.
+ * @return The prefix.
+ */
 char* log_get_level_string(LogLevel level);
 
+/**
+ * @brief Write the message to the log file.
+ * @param level The log level.
+ * @param message The message.
+ */
 void log_write(LogLevel level, const char* message);
 
+/**
+ * @brief Log the message at the debug level.
+ * @param level The log level.
+ * @param message The message.
+ * @param args The arguments.
+ */
 void LOG(LogLevel level, const char *message);
 
 #define LOG_DEBUG(message) LOG(LOG_LEVEL_DEBUG, message)

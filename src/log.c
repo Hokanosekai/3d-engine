@@ -3,6 +3,7 @@
 
 #include "log.h"
 
+// Global variables
 Log* LOGGER = NULL;
 
 int log_init(LogLevel level)
@@ -15,16 +16,10 @@ int log_init(LogLevel level)
   return 0;
 }
 
-void log_destroy(Log* log)
+void log_destroy()
 {
-  fclose(log->file);
-  free(log);
-}
-
-void log_restart(Log *log)
-{
-  fclose(log->file);
-  log->file = fopen(LOG_FILE, "a");
+  fclose(LOGGER->file);
+  free(LOGGER);
 }
 
 char* log_get_level_string(LogLevel level)
