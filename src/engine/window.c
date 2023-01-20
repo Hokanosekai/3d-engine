@@ -5,7 +5,7 @@
 
 #include "window.h"
 #include "config.h"
-#include "log.h"
+#include "utils/log.h"
 
 Window* window_init(int x_pos, int y_pos, int width, int height, const char* title, bool fullscreen)
 {

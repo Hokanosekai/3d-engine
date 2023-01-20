@@ -3,10 +3,11 @@
 #include <stdio.h>
 #include <time.h>
 
-#include "timer.h"
-#include "window.h"
-#include "config.h"
-#include "log.h"
+#include "engine/utils/log.h"
+#include "engine/input/input_manager.h"
+#include "engine/utils/timer.h"
+#include "engine/window.h"
+#include "engine/config.h"
 
 int main(int argc, char *argv[])
 {
@@ -32,17 +33,37 @@ int main(int argc, char *argv[])
     return EXIT_FAILURE;
   }  
 
+  InputManager* input_manager = input_manager_init();
+  if (input_manager == NULL) {
+    LOG_FATAL("input_manager_init() failed");
+    return EXIT_FAILURE;
+  }
 
   LOG_INFO("Starting main loop");
   timer_start(timer);
 
-  while (true) {
+  bool is_running = true;
+
+  while (is_running) {
     timer_start(timer);
     delta_time = timer_compute_delta_time(timer);
     
     window_update_fps(window, delta_time);
-    window_clear(window);
+    
+    input_manager_prepare_update(input_manager);
+    is_running = input_manager_poll_inputs(input_manager);
+    KeyboardState* keyboard_state = input_manager_get_keyboard_state(input_manager);
 
+    if (keyboard_state_get_key_status(keyboard_state, SDL_SCANCODE_ESCAPE) == KEY_JUST_PRESSED) {
+      LOG_INFO("Escape key pressed");
+      is_running = false;
+    }
+
+    if (keyboard_state_is_held(keyboard_state, SDL_SCANCODE_F)) {
+      LOG_INFO("F key pressed");
+    }
+
+    window_clear(window);
     window_swap_buffers(window);
 
     timer_delay(timer);
